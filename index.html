@@ -15,8 +15,8 @@
       color: white;
     }
 
-    /* ===== CINEMATIC INTRO ===== */
-    .cinema {
+    /* ===== BOOT ===== */
+    .boot {
       position: fixed;
       inset: 0;
       background: black;
@@ -28,16 +28,15 @@
       animation: fadeOut 3.5s ease 3.5s forwards;
     }
 
-    .cinema h1 {
+    .boot h1 {
       font-size: 28px;
       letter-spacing: 6px;
       animation: glow 1.2s infinite alternate;
     }
 
-    .cinema p {
+    .boot p {
       font-size: 12px;
       opacity: 0.6;
-      margin-top: 8px;
     }
 
     @keyframes glow {
@@ -49,28 +48,11 @@
       to { opacity: 0; visibility: hidden; }
     }
 
-    /* ===== CINEMATIC SCANLINES ===== */
-    .scan {
-      position: fixed;
-      width: 100%;
-      height: 2px;
-      background: cyan;
-      top: 0;
-      opacity: 0.15;
-      animation: scanMove 3s linear infinite;
-      z-index: 5;
-    }
-
-    @keyframes scanMove {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-
     /* ===== VIEWER ===== */
     model-viewer {
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle, #0a0a0a, #000);
+      background: radial-gradient(circle, #111, #000);
     }
 
     /* ===== HUD ===== */
@@ -79,36 +61,66 @@
       top: 12px;
       width: 100%;
       text-align: center;
-      z-index: 10;
       font-size: 14px;
       letter-spacing: 2px;
       opacity: 0.85;
-    }
-
-    .hint {
-      position: absolute;
-      top: 38px;
-      width: 100%;
-      text-align: center;
-      font-size: 11px;
-      opacity: 0.5;
       z-index: 10;
     }
 
-    /* ===== GLASS GLOW ===== */
+    .mission {
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.6;
+      z-index: 10;
+      animation: flicker 2s infinite;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+      100% { opacity: 0.5; }
+    }
+
+    /* ===== GLOW CORE ===== */
     .glow {
       position: absolute;
-      width: 300px;
-      height: 300px;
-      background: rgba(0, 180, 255, 0.18);
-      filter: blur(80px);
+      width: 320px;
+      height: 320px;
+      background: rgba(0, 200, 255, 0.18);
+      filter: blur(90px);
       top: 45%;
       left: 50%;
       transform: translate(-50%, -50%);
+      animation: pulse 2.5s infinite;
       pointer-events: none;
     }
 
-    /* ===== CONTROLS ===== */
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.25); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ===== SCANLINES ===== */
+    .scan {
+      position: fixed;
+      width: 100%;
+      height: 2px;
+      background: cyan;
+      top: 0;
+      opacity: 0.12;
+      animation: scanMove 3s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    /* ===== UI BUTTONS ===== */
     .controls {
       position: absolute;
       bottom: 25px;
@@ -127,74 +139,38 @@
       cursor: pointer;
     }
 
-    .select {
-      background: white;
-      color: black;
-    }
-
-    .ar {
+    .start {
       background: linear-gradient(90deg, cyan, magenta);
       color: black;
+      box-shadow: 0 0 20px rgba(0,200,255,0.5);
     }
 
-    /* ===== REALITY SHIFT FX ===== */
-    .fx {
-      position: fixed;
-      inset: 0;
-      background: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.2s;
-    }
-
-    .fx.active {
-      opacity: 1;
-      background: radial-gradient(circle, rgba(0,150,255,0.35), black);
-      backdrop-filter: blur(10px);
-    }
-
-    .fx-text {
-      font-size: 13px;
-      letter-spacing: 3px;
-      color: cyan;
-      animation: glitch 0.6s infinite;
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0,0); text-shadow: 2px 0 magenta; }
-      25% { transform: translate(2px,-1px); }
-      50% { transform: translate(-2px,1px); text-shadow: -2px 0 cyan; }
-      75% { transform: translate(1px,2px); }
-      100% { transform: translate(0,0); }
+    .missionBox {
+      position: absolute;
+      top: 90px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.8;
+      z-index: 10;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- CINEMATIC INTRO -->
-  <div class="cinema">
+  <!-- BOOT -->
+  <div class="boot">
     <h1>TIMELINE X</h1>
-    <p>Nexus AI • Initializing Reality Engine</p>
+    <p>Initializing AR Game Engine...</p>
   </div>
 
-  <!-- SCANLINES -->
   <div class="scan"></div>
-
-  <!-- HUD -->
-  <div class="hud">CINEMATIC AR WORLD • ACTIVE</div>
-  <div class="hint">Select Core or Room → Enter AR</div>
-
   <div class="glow"></div>
 
-  <!-- REALITY SHIFT FX -->
-  <div id="fx" class="fx">
-    <div class="fx-text">REALITY STABILIZING...</div>
-  </div>
+  <div class="hud">AR GAME MODE ACTIVE</div>
+  <div class="mission" id="missionText">🧠 Loading mission...</div>
+  <div class="missionBox" id="missionBox">MISSION: Stabilize Core Object</div>
 
   <!-- MODEL -->
   <model-viewer
@@ -205,46 +181,63 @@
     ar
     ar-modes="scene-viewer quick-look webxr"
     shadow-intensity="1"
-    exposure="1"
+    exposure="1.1"
   ></model-viewer>
 
-  <!-- CONTROLS -->
+  <!-- BUTTON -->
   <div class="controls">
-    <button class="select" onclick="setCore()">Core</button>
-    <button class="select" onclick="setRoom()">Room</button>
-    <button class="ar" onclick="enterAR()">ENTER AR</button>
+    <button class="start" onclick="startARGame()">ENTER MISSION</button>
   </div>
 
   <script>
     const viewer = document.getElementById("viewer");
-    const fx = document.getElementById("fx");
+    const missionText = document.getElementById("missionText");
+    const missionBox = document.getElementById("missionBox");
 
-    let selectedModel = "model.glb";
+    // fake AI mission system
+    const missions = [
+      "Scanning environment...",
+      "Energy anomaly detected...",
+      "Core object unstable...",
+      "Stabilization required...",
+      "Ready for AR deployment"
+    ];
 
-    function setCore() {
-      selectedModel = "model.glb";
-      viewer.src = selectedModel;
+    let i = 0;
+    setInterval(() => {
+      missionText.innerText = "🧠 Nexus AI: " + missions[i % missions.length];
+      i++;
+    }, 1800);
+
+    function playGameSound() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+
+      o.type = "sawtooth";
+      o.frequency.setValueAtTime(120, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 1.5);
+
+      g.gain.setValueAtTime(0.1, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.5);
+
+      o.connect(g);
+      g.connect(ctx.destination);
+
+      o.start();
+      o.stop(ctx.currentTime + 1.5);
     }
 
-    function setRoom() {
-      selectedModel = "futuristic_compact_room-v1.glb";
-      viewer.src = selectedModel;
-    }
+    function startARGame() {
+      if (navigator.vibrate) navigator.vibrate([80, 40, 120]);
 
-    function enterAR() {
-      viewer.src = selectedModel;
+      playGameSound();
 
-      if (navigator.vibrate) navigator.vibrate([60, 30, 90]);
-
-      fx.classList.add("active");
+      missionBox.innerText = "MISSION: Deploy Core into Reality";
 
       setTimeout(() => {
         viewer.activateAR();
       }, 900);
-
-      setTimeout(() => {
-        fx.classList.remove("active");
-      }, 2500);
     }
   </script>
 
