@@ -15,8 +15,8 @@
       color: white;
     }
 
-    /* ===== AI INTRO LAYER ===== */
-    .ai {
+    /* ===== BOOT ===== */
+    .boot {
       position: fixed;
       inset: 0;
       background: black;
@@ -25,32 +25,18 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      animation: fadeOut 3.5s ease 4s forwards;
+      animation: fadeOut 3s ease 3.5s forwards;
     }
 
-    .ai-title {
+    .boot h1 {
       font-size: 28px;
-      letter-spacing: 6px;
-      font-weight: bold;
+      letter-spacing: 5px;
       animation: glow 1.2s infinite alternate;
     }
 
-    .ai-sub {
-      margin-top: 10px;
+    .boot p {
       font-size: 12px;
       opacity: 0.6;
-      animation: flicker 1.2s infinite;
-    }
-
-    .ai-log {
-      margin-top: 20px;
-      font-size: 11px;
-      opacity: 0.4;
-      font-family: monospace;
-      animation: typing 3s steps(40);
-      white-space: nowrap;
-      overflow: hidden;
-      width: 0;
     }
 
     @keyframes glow {
@@ -58,47 +44,37 @@
       to { text-shadow: 0 0 30px magenta; }
     }
 
-    @keyframes flicker {
-      0%,100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 260px; }
-    }
-
     @keyframes fadeOut {
       to { opacity: 0; visibility: hidden; }
     }
 
     /* ===== MAIN UI ===== */
-    .top {
+    .hud {
       position: absolute;
       top: 15px;
       width: 100%;
       text-align: center;
       z-index: 10;
       opacity: 0;
-      animation: fadeIn 2s ease 4.2s forwards;
+      animation: fadeIn 2s ease 3.8s forwards;
     }
 
-    .title {
-      font-size: 18px;
-      letter-spacing: 3px;
+    .hud-title {
+      font-size: 16px;
       font-weight: bold;
+      letter-spacing: 2px;
     }
 
-    .subtitle {
-      font-size: 12px;
+    .hud-sub {
+      font-size: 11px;
       opacity: 0.6;
-      margin-top: 4px;
     }
 
     @keyframes fadeIn {
       to { opacity: 1; }
     }
 
+    /* ===== MODEL ===== */
     model-viewer {
       width: 100vw;
       height: 100vh;
@@ -108,55 +84,86 @@
     /* ===== PORTAL EFFECT ===== */
     .portal {
       position: absolute;
-      width: 320px;
-      height: 320px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,255,255,0.2), transparent);
-      filter: blur(40px);
+      background: radial-gradient(circle, rgba(0,180,255,0.25), transparent);
+      filter: blur(60px);
       top: 45%;
       left: 50%;
       transform: translate(-50%, -50%);
       animation: pulse 2s infinite;
+      z-index: 1;
     }
 
     @keyframes pulse {
       0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.2); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
       100% { transform: translate(-50%, -50%) scale(1); }
     }
 
-    /* ===== AR BUTTON STATES ===== */
+    /* ===== BUTTON ===== */
     .enter {
       position: absolute;
-      bottom: 30px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       padding: 16px 32px;
-      background: linear-gradient(90deg, cyan, magenta);
       border: none;
       border-radius: 50px;
       font-weight: bold;
-      color: black;
-      font-size: 15px;
-      z-index: 10;
       cursor: pointer;
-      box-shadow: 0 0 30px rgba(0,255,255,0.4);
+      z-index: 10;
+      background: linear-gradient(90deg, cyan, magenta);
+      color: black;
+      box-shadow: 0 0 25px rgba(0,200,255,0.5);
       opacity: 0;
-      animation: fadeIn 2s ease 4.5s forwards;
+      animation: fadeIn 2s ease 4s forwards;
     }
 
-    .enter:active {
-      transform: translateX(-50%) scale(0.95);
+    /* ===== REALITY SHIFT OVERLAY ===== */
+    .fx {
+      position: fixed;
+      inset: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
     }
 
-    /* ===== SCANLINE ===== */
+    .fx.active {
+      opacity: 1;
+      background: radial-gradient(circle, rgba(0,140,255,0.4), black);
+      backdrop-filter: blur(10px);
+    }
+
+    .fx-text {
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: cyan;
+      animation: glitch 0.6s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0,0); text-shadow: 2px 0 magenta; }
+      25% { transform: translate(2px,-1px); }
+      50% { transform: translate(-2px,1px); text-shadow: -2px 0 cyan; }
+      75% { transform: translate(1px,2px); }
+      100% { transform: translate(0,0); }
+    }
+
+    /* scanline */
     .scanline {
       position: fixed;
       width: 100%;
       height: 2px;
       background: cyan;
       top: 0;
-      opacity: 0.15;
+      opacity: 0.1;
       animation: scan 3s linear infinite;
     }
 
@@ -169,23 +176,28 @@
 
 <body>
 
-  <!-- AI BOOT -->
-  <div class="ai">
-    <div class="ai-title">TIMELINE X</div>
-    <div class="ai-sub">Nexus AI • Reality Engine Booting</div>
-    <div class="ai-log">[system] calibrating spatial AR mesh...</div>
+  <!-- BOOT -->
+  <div class="boot">
+    <h1>TIMELINE X</h1>
+    <p>Nexus AI • Reality Engine Syncing</p>
   </div>
 
-  <!-- SCAN EFFECT -->
+  <!-- SCANLINE -->
   <div class="scanline"></div>
 
-  <!-- MAIN UI -->
-  <div class="top">
-    <div class="title">TIMELINE X</div>
-    <div class="subtitle">Powered by Nexus AI • Reality Layer Active</div>
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-title">TIMELINE X</div>
+    <div class="hud-sub">Portal AR System Active</div>
   </div>
 
+  <!-- PORTAL -->
   <div class="portal"></div>
+
+  <!-- REALITY SHIFT FX -->
+  <div id="fx" class="fx">
+    <div class="fx-text">REALITY SHIFT INITIATED...</div>
+  </div>
 
   <!-- MODEL -->
   <model-viewer
@@ -200,22 +212,30 @@
     style="width:100vw;height:100vh;"
   ></model-viewer>
 
-  <!-- ENTER AR -->
-  <button class="enter" onclick="launchAR()">
-    ENTER REALITY PORTAL ✨
+  <!-- BUTTON -->
+  <button class="enter" onclick="enterAR()">
+    ENTER PORTAL ✨
   </button>
 
   <script>
-    function launchAR() {
-      const viewer = document.getElementById("viewer");
+    const viewer = document.getElementById("viewer");
+    const fx = document.getElementById("fx");
 
-      // haptic feedback if supported
-      if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+    function enterAR() {
+      if (navigator.vibrate) navigator.vibrate([60, 30, 90]);
 
-      // small delay for "portal feel"
+      // show reality shift
+      fx.classList.add("active");
+
+      // delay AR launch for effect
       setTimeout(() => {
         viewer.activateAR();
-      }, 600);
+      }, 900);
+
+      // remove effect after launch
+      setTimeout(() => {
+        fx.classList.remove("active");
+      }, 2500);
     }
   </script>
 
