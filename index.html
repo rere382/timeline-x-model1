@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: black;
+    }
+
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+    }
+
+    /* Custom AR button overlay */
+    .ar-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 14px 22px;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+
+  <model-viewer
+    id="viewer"
+    src="model.glb"
+    camera-controls
+    auto-rotate
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    shadow-intensity="1"
+    exposure="1"
+    style="width:100vw;height:100vh;"
+  >
+  </model-viewer>
+
+  <button class="ar-button" onclick="openAR()">
+    📱 View in AR
+  </button>
+
+  <script>
+    const viewer = document.getElementById('viewer');
+
+    function openAR() {
+      // This triggers native AR on supported devices
+      viewer.activateAR();
+    }
+  </script>
+
+</body>
+</html>
