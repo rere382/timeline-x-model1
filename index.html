@@ -15,60 +15,101 @@
       color: white;
     }
 
-    /* ===== SCAN UI ===== */
-    .scan {
+    /* ===== CINEMATIC INTRO ===== */
+    .cinema {
       position: fixed;
       inset: 0;
+      background: black;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: black;
-      z-index: 9999;
-      animation: fadeOut 3s ease 3.5s forwards;
+      z-index: 99999;
+      animation: fadeOut 3.5s ease 3.5s forwards;
     }
 
-    .scan h1 {
-      letter-spacing: 5px;
-      font-size: 26px;
+    .cinema h1 {
+      font-size: 28px;
+      letter-spacing: 6px;
       animation: glow 1.2s infinite alternate;
     }
 
-    .scan p {
+    .cinema p {
       font-size: 12px;
       opacity: 0.6;
+      margin-top: 8px;
     }
 
     @keyframes glow {
       from { text-shadow: 0 0 10px cyan; }
-      to { text-shadow: 0 0 30px magenta; }
+      to { text-shadow: 0 0 35px magenta; }
     }
 
     @keyframes fadeOut {
       to { opacity: 0; visibility: hidden; }
     }
 
-    /* ===== MAIN ===== */
+    /* ===== CINEMATIC SCANLINES ===== */
+    .scan {
+      position: fixed;
+      width: 100%;
+      height: 2px;
+      background: cyan;
+      top: 0;
+      opacity: 0.15;
+      animation: scanMove 3s linear infinite;
+      z-index: 5;
+    }
+
+    @keyframes scanMove {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    /* ===== VIEWER ===== */
     model-viewer {
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle, #111, #000);
+      background: radial-gradient(circle, #0a0a0a, #000);
     }
 
-    /* HUD */
+    /* ===== HUD ===== */
     .hud {
       position: absolute;
       top: 12px;
       width: 100%;
       text-align: center;
-      font-size: 13px;
+      z-index: 10;
+      font-size: 14px;
       letter-spacing: 2px;
-      opacity: 0.8;
+      opacity: 0.85;
+    }
+
+    .hint {
+      position: absolute;
+      top: 38px;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.5;
       z-index: 10;
     }
 
-    /* MODE SELECT */
-    .panel {
+    /* ===== GLASS GLOW ===== */
+    .glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: rgba(0, 180, 255, 0.18);
+      filter: blur(80px);
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
       position: absolute;
       bottom: 25px;
       left: 50%;
@@ -86,41 +127,74 @@
       cursor: pointer;
     }
 
+    .select {
+      background: white;
+      color: black;
+    }
+
     .ar {
       background: linear-gradient(90deg, cyan, magenta);
       color: black;
     }
 
-    .swap {
-      background: white;
-      color: black;
+    /* ===== REALITY SHIFT FX ===== */
+    .fx {
+      position: fixed;
+      inset: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99998;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
     }
 
-    /* glow */
-    .glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: rgba(0, 200, 255, 0.15);
-      filter: blur(80px);
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .fx.active {
+      opacity: 1;
+      background: radial-gradient(circle, rgba(0,150,255,0.35), black);
+      backdrop-filter: blur(10px);
+    }
+
+    .fx-text {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: cyan;
+      animation: glitch 0.6s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0,0); text-shadow: 2px 0 magenta; }
+      25% { transform: translate(2px,-1px); }
+      50% { transform: translate(-2px,1px); text-shadow: -2px 0 cyan; }
+      75% { transform: translate(1px,2px); }
+      100% { transform: translate(0,0); }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- SCAN INTRO -->
-  <div class="scan">
+  <!-- CINEMATIC INTRO -->
+  <div class="cinema">
     <h1>TIMELINE X</h1>
-    <p>Scanning environment for AR placement...</p>
+    <p>Nexus AI • Initializing Reality Engine</p>
   </div>
 
-  <div class="hud">REAL WORLD AR MODE • NEXUS ENGINE</div>
+  <!-- SCANLINES -->
+  <div class="scan"></div>
+
+  <!-- HUD -->
+  <div class="hud">CINEMATIC AR WORLD • ACTIVE</div>
+  <div class="hint">Select Core or Room → Enter AR</div>
 
   <div class="glow"></div>
+
+  <!-- REALITY SHIFT FX -->
+  <div id="fx" class="fx">
+    <div class="fx-text">REALITY STABILIZING...</div>
+  </div>
 
   <!-- MODEL -->
   <model-viewer
@@ -135,30 +209,42 @@
   ></model-viewer>
 
   <!-- CONTROLS -->
-  <div class="panel">
-    <button class="swap" onclick="setMain()">Core Object</button>
-    <button class="swap" onclick="setDesk()">Desk Object</button>
-    <button class="ar" onclick="startAR()">PLACE IN REAL WORLD</button>
+  <div class="controls">
+    <button class="select" onclick="setCore()">Core</button>
+    <button class="select" onclick="setRoom()">Room</button>
+    <button class="ar" onclick="enterAR()">ENTER AR</button>
   </div>
 
   <script>
     const viewer = document.getElementById("viewer");
+    const fx = document.getElementById("fx");
 
-    function setMain() {
-      viewer.src = "model.glb";
+    let selectedModel = "model.glb";
+
+    function setCore() {
+      selectedModel = "model.glb";
+      viewer.src = selectedModel;
     }
 
-    function setDesk() {
-      viewer.src = "desk.glb";
+    function setRoom() {
+      selectedModel = "futuristic_compact_room-v1.glb";
+      viewer.src = selectedModel;
     }
 
-    function startAR() {
-      if (navigator.vibrate) navigator.vibrate([70, 40, 90]);
+    function enterAR() {
+      viewer.src = selectedModel;
 
-      // slight delay = “scan feel”
+      if (navigator.vibrate) navigator.vibrate([60, 30, 90]);
+
+      fx.classList.add("active");
+
       setTimeout(() => {
         viewer.activateAR();
-      }, 600);
+      }, 900);
+
+      setTimeout(() => {
+        fx.classList.remove("active");
+      }, 2500);
     }
   </script>
 
